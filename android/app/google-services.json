@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323503007313",
+    "project_id": "drug-7f969",
+    "storage_bucket": "drug-7f969.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323503007313:android:2ed9589e19e660445a3a70",
+        "android_client_info": {
+          "package_name": "com.reminderapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvpjM5yXb9CsX_DUh7gi1dBGkrRUP0KgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
