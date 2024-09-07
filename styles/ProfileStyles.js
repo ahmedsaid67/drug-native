@@ -100,6 +100,16 @@ const styles = StyleSheet.create({
     fontSize: 14,          // Smaller font size
     fontWeight: '500',    // Slightly lighter font weight
   },
+  removeIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -10,
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default styles;

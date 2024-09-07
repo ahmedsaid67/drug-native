@@ -16,6 +16,7 @@ export const API_ROUTES = {
   PUT_PROFIL:API_KEY + '/profils/update_profile_by_user_id/data/',
   RESET_PASSWORD_CODE : API_KEY +'/password-reset/request-reset/' ,
   RESET_PASSWORD : API_KEY +'/password-reset/reset-password/' ,
+  GOGLE_LOGIN: API_KEY + '/google/'
 
 };
 

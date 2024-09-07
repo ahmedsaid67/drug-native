@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.reminderapp">
+    package="com.drugapp">
 
     <!-- Gereken izinler -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,6 +26,11 @@
         <meta-data
             android:name="com.dieam.reactnativepushnotification.notification_foreground"
             android:value="false"/>
+        
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.CredentialPickerConfig"
+            android:value="@integer/google_play_services_version" />
+            
             
         <meta-data
             android:name="com.dieam.reactnativepushnotification.notification_color"

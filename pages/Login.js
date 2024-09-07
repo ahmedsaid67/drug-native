@@ -7,6 +7,10 @@ import styles from '../styles/LoginStyles';
 import LoginHeader from '../components/LoginHeader';
 import { colors } from '../styles/colors'; // Adjust the import path as necessary
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { submitGoogleLogin } from '../context/features/auth/loginSlice';
+
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,6 +23,15 @@ const Login = () => {
 
   const loading = useSelector((state) => state.login.loading);
   const loginStatus = useSelector((state) => state.login.success);
+  const mailLoading = useSelector((state) => state.mailLogin.loading);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '961430999782-h5hk92jjacn5gb2rjt8mmv6nrlpftarp.apps.googleusercontent.com', // Web Client ID
+      offlineAccess: true, // Oturum yenileme için offline erişimi etkinleştirir
+    });
+  }, []);
+  
 
   const handleLogin = () => {
     const newErrors = {};
@@ -32,6 +45,19 @@ const Login = () => {
 
     dispatch(submitLogin(email, password));
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        // Dispatch the submitGoogleLogin action with userInfo
+        dispatch(submitGoogleLogin(userInfo));
+    } catch (error) {
+        console.error("Google Sign-In Error: ", error);
+    }
+};
+
+
 
   useEffect(() => {
     if (loginStatus) {
@@ -92,6 +118,16 @@ const Login = () => {
             <Text style={styles.buttonText}>Giriş</Text>
           </TouchableOpacity>
         )}
+
+        {mailLoading ? (
+          <TouchableOpacity style={styles.googleButton} disabled={true}>
+            <ActivityIndicator size="small" color={colors.secondText} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+            <Text style={styles.buttonText}>Google ile Devam Et</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={() => navigation.navigate('ResetPasswordCode')}>
           <Text style={styles.forgotPasswordText}>Şifremi unuttum</Text>
         </TouchableOpacity>
@@ -107,4 +143,3 @@ const Login = () => {
 };
 
 export default Login;
-

@@ -4,7 +4,8 @@ import { showMessage } from '../message/messageSlice';
 import { setUser,userLoggedOut } from '../user/userSlice';
 import { deleteToken,storeToken,getToken } from '../../../storage/Storage';
 import { API_ROUTES } from '../../../utils/constant';
-
+import { mailLoadingDone } from './mailLoginSlice';
+import { mailLoginLoading } from './mailLoginSlice';
 
 export const submitLogin = (email, password) => async (dispatch) => {
   try {
@@ -90,7 +91,7 @@ export const submitCreate = (email, password, firstName, lastName) => async (dis
     dispatch(loginLoading());
 
     // Kullanıcıyı oluşturma isteği
-    await axios.post(API_ROUTES.USERS, {
+    const createResponse=await axios.post(API_ROUTES.USERS, {
       email,
       password,
       first_name: firstName,
@@ -98,11 +99,10 @@ export const submitCreate = (email, password, firstName, lastName) => async (dis
     });
 
     // Kullanıcıyı otomatik olarak giriş yapma
-    const loginResponse = await axios.post(API_ROUTES.LOGIN, { email, password });
 
     // Token'ı saklama ve başlık ayarlama
-    storeToken(loginResponse.data.token);
-    axios.defaults.headers.common["Authorization"] = `Token ${loginResponse.data.token}`;
+    storeToken(createResponse.data.token);
+    axios.defaults.headers.common["Authorization"] = `Token ${createResponse.data.token}`;
 
     // Kullanıcı bilgilerini alma
 
@@ -168,7 +168,83 @@ export const submitCreate = (email, password, firstName, lastName) => async (dis
   }
 };
 
-  
+
+
+export const submitGoogleLogin = (userInfo) => async (dispatch) => {
+  try {
+    // Başlangıçta yükleniyor durumunu başlat
+    dispatch(mailLoginLoading());
+
+
+    const idToken = userInfo.data.idToken;
+
+    // idToken'ı Django backend'e gönder
+    const response = await axios.post(API_ROUTES.GOGLE_LOGIN, 
+        { token: idToken },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+
+    // Backend'den alınan token'ı sakla
+    const { token } = response.data;
+    if (token) {
+        // Token'ı sakla
+        storeToken(token);
+        
+        // Axios'un varsayılan header'ını güncelle
+        axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+
+        // Kullanıcı bilgilerini al
+        try {
+            const userResponse = await axios.get(API_ROUTES.GET_USER);
+            dispatch(setUser(userResponse.data));
+        } catch (error) {
+            dispatch(
+                showMessage({
+                    message: "Kullanıcı bilgileri alınamadı. Lütfen tekrar deneyin.",
+                    variant: "error",
+                })
+            );
+            console.error("Kullanıcı bilgileri alınamadı:", error);
+            dispatch(loginError("Kullanıcı bilgileri alınamadı. Lütfen tekrar deneyin."));
+        }
+
+        // Başarı mesajını göster
+        dispatch(loginSuccess());
+        dispatch(
+            showMessage({
+                message: "Giriş işlemi başarıyla tamamlandı!",
+                variant: "success",
+            })
+        );
+    } else {
+        // Hata mesajını göster
+        dispatch(
+            showMessage({
+                message: "Giriş işlemi sırasında bir sorun oluştu. Lütfen tekrar deneyin.",
+                variant: "error",
+            })
+        );
+        dispatch(loginError("Giriş işlemi sırasında bir sorun oluştu. Lütfen tekrar deneyin."));
+    }
+  } catch (error) {
+    // Google oturumu açma hatası
+    dispatch(
+        showMessage({
+            message: "Google ile giriş yapılamadı. Lütfen bağlantınızı kontrol edin ve tekrar deneyin.",
+            variant: "error",
+        })
+    );
+    console.error("Google giriş hatası:", error);
+    dispatch(loginError("Google ile giriş yapılamadı. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."));
+  } finally {
+    // Yükleniyor durumunu sonlandır
+    dispatch(mailLoadingDone());
+  }
+};
 
 
 
@@ -256,3 +332,5 @@ export const {
 } = loginSlice.actions;
 
 export default loginSlice.reducer;
+
+

@@ -4,11 +4,13 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import loginSlice from "./features/auth/loginSlice";
 import messageSlice from "./features/message/messageSlice";
 import userSlice from "./features/user/userSlice";
+import mailLoginSlice from "./features/auth/mailLoginSlice";
 
 const rootReducer = combineReducers({
     login: loginSlice,
     message: messageSlice,
     user: userSlice,
+    mailLogin:mailLoginSlice
 });
 
 const store = configureStore({

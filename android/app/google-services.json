@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:323503007313:android:2ed9589e19e660445a3a70",
+        "mobilesdk_app_id": "1:323503007313:android:00c0bf248f5164cf5a3a70",
         "android_client_info": {
-          "package_name": "com.reminderapp"
+          "package_name": "com.drugapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "323503007313-10rg7id42546nqlbh4mnu4lq1upapieg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drugapp",
+            "certificate_hash": "edc391e2f60120511352dc7545068e370f879575"
+          }
+        },
+        {
+          "client_id": "323503007313-fa4lk8al35onlpprg757dc50qmi50hpc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCvpjM5yXb9CsX_DUh7gi1dBGkrRUP0KgU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323503007313-fa4lk8al35onlpprg757dc50qmi50hpc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

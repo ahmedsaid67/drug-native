@@ -89,6 +89,16 @@ const styles = StyleSheet.create({
       width: 24,
       height: 24,
     },
+    googleButton: {
+      backgroundColor: '#4285F4',
+      width: '100%',
+      padding: 15,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 10,
+      minHeight: 52,
+    },
+    
     
 });
 
