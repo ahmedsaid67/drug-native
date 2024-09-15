@@ -93,7 +93,7 @@ const ResetPasswordCode = () => {
             disabled={loading} // Disable button when loading
             >
             {loading ? (
-                <ActivityIndicator size="small" color={colors.secondText} /> // Show loading indicator if loading
+                <ActivityIndicator size="small" color={colors.loadingColor} /> // Show loading indicator if loading
             ) : (
                 <Text style={styles.buttonText}>Şifreyi Sıfırla</Text> // Button text
             )}

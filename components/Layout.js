@@ -66,13 +66,13 @@ const Layout = ({ children, currentRoute }) => {
   const showBars = ["Ana Sayfa", "Arama", "Bildirimler", "Hatırlatıcılar"].includes(currentRoute);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1}}>
       {showBars && <UstBar />}
       <View style={{ flex: 1 }}>
         {children}
       </View>
       {showBars && <AltBar />}
-      <Message/>
+      <Message />
     </View>
   );
 };

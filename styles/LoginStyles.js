@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
       fontSize: 24,
       fontWeight: 'bold',
       marginBottom: 20,
-      color: 'black',
+      color: colors.text,
       textAlign: 'left',  // Sol hizalı başlık
     },
     input: {
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
       color: colors.text,
     },
     button: {
-      backgroundColor: colors.butonBackround,
+      backgroundColor: colors.uygulamaRengi,
       width: '100%',
       padding: 15,
       borderRadius: 5,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
     forgotPasswordText: {
-      color: colors.secondColor,
+      color: colors.uygulamaRengi,
       marginTop: 10,
       textAlign: 'left',  // Sol hizalı
     },
@@ -61,14 +61,14 @@ const styles = StyleSheet.create({
       marginRight: 5,
     },
     registerLink: {
-      color: colors.secondColor,
+      color: colors.uygulamaRengi,
     },
     inputError: {
-      borderColor: colors.uyariBorder,
+      borderColor: colors.uygulamaRengi,
       borderWidth: 1,
     },
     errorText: {
-      color: colors.uyariText,
+      color: colors.uygulamaRengi,
       fontSize: 12,
       marginBottom: 8,
     },

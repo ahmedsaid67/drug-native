@@ -111,7 +111,7 @@ const Login = () => {
         
         {loading ? (
           <TouchableOpacity style={styles.button} disabled={true}>
-            <ActivityIndicator size="small" color={colors.secondText} />
+            <ActivityIndicator size="small" color={colors.loadingColor} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
@@ -121,7 +121,7 @@ const Login = () => {
 
         {mailLoading ? (
           <TouchableOpacity style={styles.googleButton} disabled={true}>
-            <ActivityIndicator size="small" color={colors.secondText} />
+            <ActivityIndicator size="small" color={colors.loadingColor} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     height: 100,           // Smaller profile image
     borderRadius: 50,      // Adjusted for smaller image
     borderWidth: 1,        // Thinner border
-    borderColor: colors.butonBackround,
+    borderColor: colors.uygulamaRengi,
     backgroundColor: '#fff',
   },
   profileImagePlaceholder: {
@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,        // Thinner border
-    borderColor: colors.butonBackround,
+    borderColor: colors.uygulamaRengi,
   },
   editIcon: {
     position: 'absolute',
     bottom: 5,
     right: 5,
-    backgroundColor: colors.butonBackround,
+    backgroundColor: colors.uygulamaRengi,
     borderRadius: 12,      // Slightly smaller icon button
     padding: 4,           // Smaller padding
     shadowColor: '#000',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   updateButton: {
-    backgroundColor: colors.butonBackround,
+    backgroundColor: colors.uygulamaRengi,
     paddingVertical: 10,   // Reduced padding for a smaller button
     borderRadius: 6,       // Slightly smaller corner radius
     alignItems: 'center',

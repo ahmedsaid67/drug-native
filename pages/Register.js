@@ -130,7 +130,7 @@ const Register = () => {
 
         {loading ? (
           <TouchableOpacity style={styles.button} disabled={true}>
-            <ActivityIndicator size="small" color={colors.secondText} />
+            <ActivityIndicator size="small" color={colors.loadingColor} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.button} onPress={handleRegister}>
