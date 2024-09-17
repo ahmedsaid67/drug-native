@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, FlatList, ActivityIndicator, Modal, Alert } from 'react-native';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import 'moment/locale/tr';
@@ -9,11 +9,12 @@ import { API_ROUTES } from '../utils/constant';
 
 const Hatirlaticilar = () => {
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
-  const [activeTab, setActiveTab] = useState('Aktif');
   const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedReminder, setSelectedReminder] = useState(null);
   const scrollViewRef = useRef();
   
   moment.locale('tr');
@@ -52,12 +53,8 @@ const Hatirlaticilar = () => {
       if (loading || !hasMore) return;
 
       setLoading(true);
-      const endpoint = activeTab === 'Aktif'
-        ? API_ROUTES.USER_REMINDER_ACTİVE
-        : API_ROUTES.USER_REMINDER_INACTIVE;
-        
       try {
-        const response = await axios.get(endpoint, {
+        const response = await axios.get(API_ROUTES.USER_REMINDER_ACTİVE, {
           params: {
             date: selectedDate,
             page: page
@@ -73,27 +70,40 @@ const Hatirlaticilar = () => {
     };
 
     fetchData();
-  }, [page, activeTab, selectedDate]); // `selectedDate` eklenmiş
+  }, [page, selectedDate]);
+
+  const handleDeleteReminder = async (id) => {
+    try {
+      await axios.patch(`${API_ROUTES.REMINDERS}${id}/`,{is_removed:true});
+      setReminders(prevReminders => prevReminders.filter(reminder => reminder.id !== id));
+      Alert.alert("Başarılı", "Hatırlatıcı başarıyla silindi.");
+    } catch (error) {
+      console.error("Error deleting reminder:", error);
+      Alert.alert("Hata", "Hatırlatıcı silinemedi.");
+    } finally {
+      setModalVisible(false);
+    }
+  };
+
+  const handlePauseReminder = async (id) => {
+    try {
+      await axios.put(API_ROUTES.REMINDER_STOPED.replace('data',id));
+      Alert.alert("Başarılı", "Hatırlatıcı durduruldu.");
+    } catch (error) {
+      console.error("Error pausing reminder:", error);
+      Alert.alert("Hata", "Hatırlatıcı durdurulamadı.");
+    } finally {
+      setModalVisible(false);
+    }
+  };
 
   const renderReminder = ({ item }) => {
     const startDate = moment(item.baslangic_tarihi).startOf('day');
     const endDate = moment(item.bitis_tarihi).endOf('day');
-    const today = moment().startOf('day');
     
-    let displayText = '';
-    const daysUntilStart = startDate.diff(today, 'days');
-    const daysUntilEnd = endDate.diff(today, 'days');
-
-    if (startDate.isAfter(today)) {
-      displayText = `Başlamasına ${daysUntilStart} gün kaldı`;
-    } else if (startDate.isSameOrBefore(today)) {
-      if (daysUntilEnd >= 0) {
-        displayText = `Tamamlanmasına ${daysUntilEnd} gün kaldı`;
-      } else {
-        displayText = 'Tamamlandı';
-      }
-    }
-
+    const formattedStartDate = startDate.format('D MMMM');
+    const formattedEndDate = endDate.format('D MMMM');
+  
     return (
       <View style={styles.reminderContainer}>
         <View style={styles.reminderContent}>
@@ -102,15 +112,20 @@ const Hatirlaticilar = () => {
             <Text style={styles.reminderText}>{item.name}</Text>
             <Text style={styles.reminderDetails}>
               {item.hatirlatici_saat.map((time, index) => (
-                <Text key={index}>{moment(time.saat, 'HH:mm:ss').format('HH:mm')}{index < item.hatirlatici_saat.length - 1 ? ' - ' : ''}</Text>
+                <Text key={index}>
+                  {moment(time.saat, 'HH:mm:ss').format('HH:mm')}
+                  {index < item.hatirlatici_saat.length - 1 ? ' - ' : ''}
+                </Text>
               ))}
             </Text>
             <Text style={styles.reminderDaysLeft}>
-              {displayText}
+              {`${formattedStartDate} - ${formattedEndDate}`}
             </Text>
           </View>
         </View>
-        <Icon name="clock-o" size={24} color="#1DA1F2" style={styles.reminderIcon} />
+        <TouchableOpacity onPress={() => { setSelectedReminder(item); setModalVisible(true); }}>
+          <Icon name="trash" size={24} color="#FF0000" style={styles.reminderIcon} />
+        </TouchableOpacity>
       </View>
     );
   };
@@ -161,39 +176,10 @@ const Hatirlaticilar = () => {
         <Text style={[styles.todayLabel, { color: isToday ? '#1DA1F2' : '#14171A' }]}>{todayLabel}</Text>
       </View>
 
-      <View style={styles.tabContainer}>
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'Aktif' ? styles.activeTab : null]}
-          onPress={() => {
-            setActiveTab('Aktif');
-            setPage(1); // Reset page number to 1 on tab change
-            setReminders([]); // Clear previous reminders
-            setHasMore(true); // Ensure more data can be fetched
-          }}
-        >
-          <Text style={[styles.tabText, activeTab === 'Aktif' ? styles.activeTabText : null]}>
-            Aktif
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'Aktif Olmayan' ? styles.activeTab : null]}
-          onPress={() => {
-            setActiveTab('Aktif Olmayan');
-            setPage(1); // Reset page number to 1 on tab change
-            setReminders([]); // Clear previous reminders
-            setHasMore(true); // Ensure more data can be fetched
-          }}
-        >
-          <Text style={[styles.tabText, activeTab === 'Aktif Olmayan' ? styles.activeTabText : null]}>
-            Aktif Olmayan
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       <FlatList
         data={reminders}
         renderItem={renderReminder}
-        keyExtractor={item => item.id.toString()} // Benzersiz `id` kullanılıyor
+        keyExtractor={item => item.id.toString()}
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         onEndReached={handleEndReached}
@@ -201,9 +187,42 @@ const Hatirlaticilar = () => {
         ListFooterComponent={loading ? <ActivityIndicator size="small" color={colors.uygulamaRengi} /> : null}
       />
 
+
       <TouchableOpacity style={styles.floatingButton}>
         <Icon name="plus" size={24} color="#fff" />
       </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Icon name="close" size={24} color="#444" />
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Hatırlatıcıyı Yönet</Text>
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={styles.pauseButton}
+                onPress={() => handlePauseReminder(selectedReminder.id)}
+              >
+                <Text style={styles.actionText}>Durdur</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteReminder(selectedReminder.id)}
+              >
+                <Text style={styles.actionText}>Sil</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+
     </View>
   );
 };
@@ -218,6 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     paddingVertical: 15,
+    marginBottom:20,
   },
   dateContainer: {
     width: 60,
@@ -232,76 +252,115 @@ const styles = StyleSheet.create({
     backgroundColor: '#1DA1F2',
   },
   dateText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#14171A',
   },
   dayText: {
     fontSize: 14,
+    color: '#657786',
   },
   selectedDateText: {
-    color: '#FFFFFF',
+    color: '#fff',
   },
   todayLabel: {
     marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingVertical: 10,
-  },
-  tab: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#14171A',
-  },
-  activeTab: {
-    borderBottomColor: '#1DA1F2',
-  },
-  activeTabText: {
     color: '#1DA1F2',
   },
   reminderContainer: {
-    position: 'relative',
-    padding: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: '#fff',
+    padding: 15,
+    marginHorizontal: 20,
+    marginBottom: 10,
     borderRadius: 10,
-    marginTop: 15,
-    marginHorizontal: 30,
-    borderWidth: 1,
-    borderColor: colors.border,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    position: 'relative', // Add this to position children absolutely within it
   },
   reminderContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1, // Allow this to take up remaining space
   },
   reminderTextContainer: {
-    flex: 1,
     marginLeft: 15,
+    flex: 1, // Allow this to take up remaining space
   },
   reminderText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#14171A',
   },
   reminderDetails: {
+    marginTop: 5,
     fontSize: 14,
-    color: '#333',
+    color: '#657786',
   },
   reminderDaysLeft: {
-    fontSize: 14,
-    color: '#1DA1F2',
+    marginTop: 5,
+    fontSize: 12,
+    color: '#657786',
   },
   reminderIcon: {
+    position: 'absolute', // Position absolutely within the container
+    right: 10, // Adjust as needed
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Daha hafif bir şeffaflık
+  },
+  modalContainer: {
+    width: '90%', // Modal genişliği artırıldı
+    padding: 30, // Daha fazla padding
+    backgroundColor: '#F2F2F2', // Açık gri tonunda sade bir renk
+    borderRadius: 20, // Köşeler daha yumuşak
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 10,
+    alignItems: 'center',
+  },
+  closeButton: {
     position: 'absolute',
-    bottom: 10,
-    right: 10,
+    top: 15,
+    right: 15,
+  },
+  modalTitle: {
+    fontSize: 22, // Başlık boyutu biraz artırıldı
+    fontWeight: '700',
+    color: '#333', // Koyu gri, profesyonel bir görünüm
+    marginBottom: 30,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  pauseButton: {
+    backgroundColor: '#6FA3EF', // Modern bir mavi tonu
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  deleteButton: {
+    backgroundColor: '#FF5959', // Kırmızı tonunu biraz daha soft yaptık
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  actionText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
   floatingButton: {
     position: 'absolute',
@@ -315,4 +374,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
 export default Hatirlaticilar;

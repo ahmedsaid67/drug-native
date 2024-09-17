@@ -50,6 +50,7 @@ export const API_ROUTES = {
   PRODUCT_CATEGORY_BY_PRODUCT : API_KEY + '/products/list-products-by-category/', // ÜRÜN KATEGORİSİNE GÖRE ÜRÜNLER -- A VİTAMİNİN DAİR ÜRÜNLERİ GETİRİR
 
   REMINDERS : API_KEY + '/reminders/',
+  REMINDER_STOPED : API_KEY + '/reminders/data/stoped/',
   USER_REMINDER_ACTİVE : API_KEY + '/reminders/user-active-reminders/?page=currentPage',
   USER_REMINDER_INACTIVE : API_KEY + '/reminders/user-inactive-reminders/?page=currentPage',
   REMINDER_HOURS : API_KEY +'/reminder-hours/',
