@@ -25,6 +25,8 @@ export const API_ROUTES = {
   
   MEDICINE_CATEGORY : API_KEY + '/ilac-kategori/', // --> paginationsuzdur.
 
+  FORM : API_KEY + '/form/' ,
+
   GET_DOSAGE_BY_AGE : API_KEY + '/yasdoz/get-dosage-by-age',  // yaş doz
   GET_DOSAGE_BY_WEIGHT : API_KEY + '/kilodoz/get-dosage-by-weight/',  // kilo doz
 
@@ -48,6 +50,7 @@ export const API_ROUTES = {
   SUPPLEMENT : API_KEY + '/supplements/', // BESİN TAKVİYELERİ
   SUPPLEMENT_BY_PRODUCT_CATEGORY : API_KEY + '/productcategory/list-categories-by-supplement/',  // BESİN TAKVİYESİNE GORE ÜRÜN KATEGORİLERİ  -- VİTAMİNLERE DİAR KATEGORİLERİ GETİRİ
   PRODUCT_CATEGORY_BY_PRODUCT : API_KEY + '/products/list-products-by-category/', // ÜRÜN KATEGORİSİNE GÖRE ÜRÜNLER -- A VİTAMİNİN DAİR ÜRÜNLERİ GETİRİR
+  COMBINED : API_KEY + '/combined/',
 
   REMINDERS : API_KEY + '/reminders/',
   REMINDER_STOPED : API_KEY + '/reminders/data/stoped/',

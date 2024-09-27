@@ -11,6 +11,9 @@ import Layout from '../components/Layout';
 import Profil from './Profil'
 import ResetPasswordCode from './ResetPasswordCode';
 import ResetPassword from './ResetPassword';
+import ReminderSearch from './ReminderSearch.js'
+import ReminderCreate from './ReminderCreate.js'
+
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +21,7 @@ const Router = ({ currentRoute }) => {
   return (
     <Layout currentRoute={currentRoute}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        
         <Stack.Screen name="Ana Sayfa" component={AnaSayfa} />
         <Stack.Screen name="Arama" component={Arama} />
         <Stack.Screen name="Bildirimler" component={Bildirimler} />
@@ -27,6 +31,8 @@ const Router = ({ currentRoute }) => {
         <Stack.Screen name="Profil" component={Profil} />
         <Stack.Screen name="ResetPasswordCode" component={ResetPasswordCode} />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
+        <Stack.Screen name="ReminderSearch" component={ReminderSearch} />
+        <Stack.Screen name="ReminderCreate" component={ReminderCreate} />
       </Stack.Navigator>
     </Layout>
   );

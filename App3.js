@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, Button, View, Alert, Platform } from 'react-native';
+import { SafeAreaView, Button, View, Alert, Linking, Platform, PermissionsAndroid} from 'react-native';
 import notifee, { AndroidImportance, TriggerType ,EventType} from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PermissionsAndroid } from 'react-native';
+
 
 
 // bu function bildirimlerin her birinin ayırt edici kimliğinin listesini ve  bu bildirimlerin hangi ilaca dair olusturulduğu bilgisi tutar
@@ -40,13 +40,7 @@ const requestNotificationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        {
-          title: 'Bildirim İzni',
-          message: 'Bu uygulamanın bildirim göndermesine izin verin.',
-          buttonNeutral: 'Sonra Sor',
-          buttonNegative: 'İptal',
-          buttonPositive: 'Tamam',
-        },
+      
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
@@ -84,7 +78,14 @@ const requestNotificationPermission = async () => {
 const scheduleNotifications = async (medicationId) => {
   const hasPermission = await requestNotificationPermission();
   if (!hasPermission) {
-    Alert.alert('İzin Verilmedi', 'Bildirim göndermek için izin vermeniz gerekiyor.');
+    Alert.alert(
+      'İzin Verilmedi',
+      'Bildirim göndermek için izin vermeniz gerekiyor. Ayarlara gidip izin açmak ister misiniz?',
+      [
+        { text: 'Hayır', onPress: () => console.log('İzin verilmedi') },
+        { text: 'Evet', onPress: () => Linking.openSettings() },
+      ]
+    );
     return;
   }
 

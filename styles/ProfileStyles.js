@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 30, // Reduced padding for a more compact look
+    paddingHorizontal: 20, // Reduced padding for a more compact look
     paddingVertical: 16,   // Reduced padding for a more compact look
   },
   profileContainer: {

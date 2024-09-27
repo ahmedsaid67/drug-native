@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.MainContainerBackground,
       },
       container: {
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         paddingVertical: 20,
       },
       title: {
