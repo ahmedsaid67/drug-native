@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { submitLogin } from '../context/features/auth/loginSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -9,8 +9,9 @@ import { colors } from '../styles/colors'; // Adjust the import path as necessar
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { submitGoogleLogin } from '../context/features/auth/loginSlice';
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_ROUTES } from '../utils/constant';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -24,6 +25,8 @@ const Login = () => {
   const loading = useSelector((state) => state.login.loading);
   const loginStatus = useSelector((state) => state.login.success);
   const mailLoading = useSelector((state) => state.mailLogin.loading);
+
+  const userMail = useSelector((state) => state.user.email);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -58,9 +61,47 @@ const Login = () => {
 };
 
 
+  // Geçmiş bildirimleri kontrol eden fonksiyon
+  const checkNotificationsOnAppStart = async () => {
+    try {
+      const notificationsString = await AsyncStorage.getItem('notifications');
+  
+      if (notificationsString) {
+        const notificationsList = JSON.parse(notificationsString);
+        const currentTime = new Date().getTime(); // Şu anki zaman
+  
+        // Geçmişteki bildirimleri filtrele
+        const pastNotifications = notificationsList.filter(notification => {
+          const notificationTime = new Date(notification.tarih + ' ' + notification.saat).getTime(); // Tarih ve saat bilgisini birleştir
+  
+          // Geçmişteki ve kullanıcıya ait bildirimler
+          return notificationTime < currentTime && notification.email === userMail;
+        });
+  
+        console.log("pastNotifications:", pastNotifications);
+  
+        if (pastNotifications.length > 0) {
+          // API'ye gönder
+          await axios.post(API_ROUTES.NOTIFICATIONS_CREATE, { bildirim_list: pastNotifications });
+  
+          // Gönderilen bildirimleri yerel depolamadan sil
+          const updatedNotificationsList = notificationsList.filter(notification =>
+            !pastNotifications.some(pastNotification => pastNotification.id === notification.id)
+          );
+          await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotificationsList));
+          console.log("Past notifications sent and removed from storage.");
+        }
+      }
+    } catch (error) {
+      console.error('Error checking notifications on app start:', error);
+    }
+  };
+
+
 
   useEffect(() => {
     if (loginStatus) {
+      checkNotificationsOnAppStart();
       navigation.navigate('Ana Sayfa');
     }
   }, [loginStatus, navigation]);

@@ -1,11 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import UserProvider from '../context/provider';
-import Router from './Router'
+import Router from './Router';
 import { NavigationContainer } from '@react-navigation/native';
+
 
 const App = () => {
   const [currentRoute, setCurrentRoute] = useState('');
   const navigationRef = useRef();
+
+  
 
   return (
     <UserProvider>
@@ -21,9 +24,7 @@ const App = () => {
           }
         }}
       >
-      
-          <Router currentRoute={currentRoute} />
-        
+        <Router currentRoute={currentRoute} />
       </NavigationContainer>
     </UserProvider>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, TextInput, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, TextInput, ActivityIndicator  } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { submitLogout } from '../context/features/auth/loginSlice';
@@ -11,6 +11,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import styles from '../styles/ProfileStyles';
 import { Keyboard } from 'react-native';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { colors } from '../styles/colors';
 
 function Profil() {
   const user = useSelector((state) => state.user);
@@ -18,6 +19,9 @@ function Profil() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(true);
+
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -32,6 +36,8 @@ function Profil() {
         setEmail(res.data.user?.email || '');
       } catch (error) {
         console.error("Profil yüklenemedi:", error);
+      } finally {
+        setLoading(false); // Set loading to false when fetching is done
       }
     };
     getProfil();
@@ -172,6 +178,10 @@ function Profil() {
     <View style={styles.pageContainer}>
       <ProfilHeader />
       <View style={styles.container}>
+      {loading ? ( // Show loading indicator if loading is true
+          <ActivityIndicator size="small" color={colors.uygulamaRengi} />
+        ) : (
+          <>
         <View style={styles.profileContainer}>
           {profil.photo ? (
             <View style={styles.profileImageWrapper}>
@@ -216,6 +226,8 @@ function Profil() {
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Çıkış Yap</Text>
         </TouchableOpacity>
+        </>
+        )}
       </View>
     </View>
   );

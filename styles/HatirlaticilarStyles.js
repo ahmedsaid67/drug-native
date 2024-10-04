@@ -90,53 +90,75 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Daha hafif bir şeffaflık
-    },
-    modalContainer: {
-      width: '90%', // Modal genişliği artırıldı
-      padding: 30, // Daha fazla padding
-      backgroundColor: '#F2F2F2', // Açık gri tonunda sade bir renk
-      borderRadius: 20, // Köşeler daha yumuşak
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Increased opacity for a darker overlay
+  },
+  modalContainer: {
+      width: '90%',
+      padding: 40,
+      backgroundColor: '#fff', // Changed to pure white for better contrast
+      borderRadius: 30,
       shadowColor: '#000',
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      elevation: 10,
+      shadowOpacity: 0.4,
+      shadowRadius: 15,
+      elevation: 12,
       alignItems: 'center',
-    },
-    closeButton: {
+  },
+  closeButton: {
       position: 'absolute',
       top: 15,
       right: 15,
-    },
-    modalTitle: {
-      fontSize: 22, // Başlık boyutu biraz artırıldı
-      fontWeight: '700',
-      color: '#333', // Koyu gri, profesyonel bir görünüm
-      marginBottom: 30,
-    },
-    modalActions: {
+  },
+  modalTitle: {
+      fontSize: 24, // Increased font size for better visibility
+      fontWeight: 'bold',
+      color: '#333', // Dark grey for better contrast
+      marginBottom: 20,
+  },
+  uyariText: {
+      fontSize: 16,
+      color: '#666', // Lighter grey for warning text
+      textAlign: 'center',
+      marginBottom: 20,
+  },
+  modalActions: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '100%',
-    },
-    pauseButton: {
-      backgroundColor: '#6FA3EF', // Modern bir mavi tonu
+      marginTop: 15,
+  },
+  pauseButton: {
+      backgroundColor: '#007BFF', // Bootstrap blue for a modern look
       paddingVertical: 12,
-      paddingHorizontal: 30,
-      borderRadius: 10,
+      width:120,
+      borderRadius: 16,
       marginRight: 10,
-    },
-    deleteButton: {
-      backgroundColor: '#FF5959', // Kırmızı tonunu biraz daha soft yaptık
+      shadowColor: '#000',
+      shadowOpacity: 0.3,
+      shadowRadius: 5,
+      elevation: 5,
+  },
+  deleteButton: {
+      backgroundColor: '#FF6B6B', // Softer red for delete button
       paddingVertical: 12,
-      paddingHorizontal: 30,
-      borderRadius: 10,
-    },
-    actionText: {
+      width:120,
+      borderRadius: 16,
+      shadowColor: '#000',
+      shadowOpacity: 0.3,
+      shadowRadius: 5,
+      elevation: 5,
+  },
+  disabledButton: {
+    backgroundColor: '#A9A9A9', // Gri renk ile butonu devre dışı olduğunu belli ediyoruz
+    shadowOpacity: 0, // Gölgeyi kaldırabiliriz
+    elevation: 0, // Gölgeyi mobil cihazlar için de kapatalım
+  },
+  actionText: {
       color: '#FFFFFF',
       fontSize: 16,
       fontWeight: '600',
-    },
+      textAlign: 'center', // Center align text for better appearance
+  },
+  
     floatingButton: {
       position: 'absolute',
       bottom: 80,

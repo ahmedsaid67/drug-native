@@ -58,6 +58,8 @@ export const API_ROUTES = {
   USER_REMINDER_INACTIVE : API_KEY + '/reminders/user-inactive-reminders/?page=currentPage',
   REMINDER_HOURS : API_KEY +'/reminder-hours/',
   NOTIFICATIONS : API_KEY +'/notifications/',
+  NOTIFICATIONS_CREATE : API_KEY +'/notifications/notifications_list_create/',
+  NOTIFICATIONS_USER_LIST : API_KEY +'/notifications/notifications_user_list/',
 
 
 

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, ScrollView,Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import styles from '../styles/ReminderCreateStyles';
+import moment from 'moment';
+import 'moment/locale/tr';
 
-const HatirlatmaSaatleriModel = ({ zamanlamaModalVisible, setZamanlamaModalVisible, setZamanlama, zamanlama }) => {
+
+const HatirlatmaSaatleriModel = ({ zamanlamaModalVisible, setZamanlamaModalVisible, setZamanlama, zamanlama, firstDate }) => {
 
     const [addDate, setAddDate] = useState(['08:00']); // Saatleri tutacak state
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false); // Saat picker görünürlüğü için
@@ -43,9 +46,33 @@ const HatirlatmaSaatleriModel = ({ zamanlamaModalVisible, setZamanlamaModalVisib
         setAddDate(updatedTimes);
     };
 
+    // Saat karşılaştırma fonksiyonu
     const handleSave = () => {
+        const now = new Date(); // Şu anki tarih ve saat
+        const currentTime = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+        // firstDate'i düzgün bir formata çevir
+        const formattedFirstDate = moment(firstDate, 'DD/MM/YYYY').format('DD.MM.YYYY'); // "29/09/2024" => "29.09.2024"
+        const nowDate = moment(now).format('DD.MM.YYYY'); // Şu anki tarihi formatla
+
+
+        const sameDay = formattedFirstDate === nowDate; // firstDate ve şu anki tarih karşılaştırması
+
+        if (sameDay) {
+            const invalidTimes = addDate.filter(time => time <= currentTime); // Şu anki saatten önceki saatler
+
+            if (invalidTimes.length > 0) {
+                // Geçersiz saatleri uyarı mesajında göster
+                Alert.alert(
+                    'Uyarı',
+                    `Hatırlatıcının ilk tarihi bugünün tarihi seçildiği için, geçmiş bir saat seçemezsiniz. Lütfen girdiğiniz saatleri kontrol ediniz.`
+                );
+                return; // Kaydetme işlemi durdurulur
+            }
+        }
+
         setZamanlama(addDate); // Seçilen saatleri kaydet
-        setZamanlamaModalVisible(false)
+        setZamanlamaModalVisible(false); // Modal'ı kapat
     };
 
     return (

@@ -9,6 +9,8 @@ import { API_ROUTES } from '../utils/constant';
 import { useNavigation } from '@react-navigation/native';
 import NoReminders from '../components/NoReminder';
 import styles from '../styles/HatirlaticilarStyles';
+import HatirlaticiYonetModel from '../components/HatirlaticiYonetModel';
+
 
 const Hatirlaticilar = () => {
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
@@ -20,6 +22,10 @@ const Hatirlaticilar = () => {
   const [selectedReminder, setSelectedReminder] = useState(null);
   const scrollViewRef = useRef();
   const navigation = useNavigation();
+
+
+
+
 
   moment.locale('tr');
 
@@ -101,30 +107,7 @@ const Hatirlaticilar = () => {
     }        
   }
 
-  const handleDeleteReminder = async (id) => {
-    try {
-      await axios.patch(`${API_ROUTES.REMINDERS}${id}/`, { is_removed: true });
-      setReminders(prevReminders => prevReminders.filter(reminder => reminder.id !== id));
-      Alert.alert("Başarılı", "Hatırlatıcı başarıyla silindi.");
-    } catch (error) {
-      console.error("Error deleting reminder:", error);
-      Alert.alert("Hata", "Hatırlatıcı silinemedi.");
-    } finally {
-      setModalVisible(false);
-    }
-  };
-
-  const handlePauseReminder = async (id) => {
-    try {
-      await axios.put(API_ROUTES.REMINDER_STOPED.replace('data', id));
-      Alert.alert("Başarılı", "Hatırlatıcı durduruldu.");
-    } catch (error) {
-      console.error("Error pausing reminder:", error);
-      Alert.alert("Hata", "Hatırlatıcı durdurulamadı.");
-    } finally {
-      setModalVisible(false);
-    }
-  };
+  
 
   const renderReminder = ({ item }) => {
     const startDate = moment(item.baslangic_tarihi).startOf('day');
@@ -147,7 +130,7 @@ const Hatirlaticilar = () => {
                 </Text>
               ))}
             </Text>
-            <Text style={styles.reminderDaysLeft}>
+            <Text style={styles.reminderDetails}>
               {`${formattedStartDate} - ${formattedEndDate}`}
             </Text>
           </View>
@@ -219,39 +202,12 @@ const Hatirlaticilar = () => {
         <Icon name="plus" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View style={styles.modalBackground}>
-            <TouchableWithoutFeedback>
-              <View style={styles.modalContainer}>
-                <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                  <Icon name="close" size={24} color="#444" />
-                </TouchableOpacity>
-                <Text style={styles.modalTitle}>Hatırlatıcıyı Yönet</Text>
-                <View style={styles.modalActions}>
-                  <TouchableOpacity
-                    style={styles.pauseButton}
-                    onPress={() => handlePauseReminder(selectedReminder.id)}
-                  >
-                    <Text style={styles.actionText}>Durdur</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleDeleteReminder(selectedReminder.id)}
-                  >
-                    <Text style={styles.actionText}>Sil</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+      {selectedReminder?.id && (
+        <HatirlaticiYonetModel modalVisible={modalVisible} setModalVisible={setModalVisible} setSelectedReminder = {setSelectedReminder} 
+        selectedReminder={selectedReminder} setReminders={setReminders} />
+      )}
+
+      
     </View>
   );
 };

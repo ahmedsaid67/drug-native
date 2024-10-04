@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const NoReminders = () => {
+const NoNotifications = () => {
 
   return (
     <View style={styles.container}>
-      <Icon name="bell-slash" size={80} color="#1DA1F2" style={styles.icon} />
-      <Text style={styles.text}>Hatırlatıcı bulunmuyor.</Text>
+      <Icon name="bell" size={80} color="#1DA1F2" style={styles.icon} /> 
+      <Text style={styles.text}>Bildirim bulunmuyor.</Text>
     </View>
   );
 };
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-
 });
 
-export default NoReminders;
+export default NoNotifications;
